@@ -25,3 +25,4 @@ Pillow
 requests
 evaluate
 bert_score
+python-dotenv

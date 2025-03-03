@@ -1,4 +1,6 @@
-# Describe-and-Dissect (DnD)
+# Describe-and-Refine (DnR)
+
+This work aims to further the work done in [Describe-and-Define](https://openreview.net/pdf?id=x1dXvvElVd). 
 
 **This is the official repository for our paper [Interpreting Neurons in Deep Vision Networks with Language Models](https://openreview.net/pdf?id=x1dXvvElVd), TMLR 2025.** For a quick read of our work, please see our [project website](https://lilywenglab.github.io/Describe-and-Dissect/): 
 * DnD is a novel method to describe the roles of hidden neurons in vision networks with higher quality than existing neuron-level interpretability tools, establishing a new state-of-the-art. 

@@ -11,10 +11,10 @@ sys.path.append("use_case/tile2vec-master")
 sys.path.append("./experiments/use_case/tile2vec-master")
 from src.resnet import ResNet18 as T2V_ResNet18
 
-DATASET_ROOTS = {"imagenet_val": "",
-                 "imagenet_train": "",
+DATASET_ROOTS = {"imagenet_val": "./ImageNet/val",
+                 "imagenet_train": "./ImageNet/train",
                  "NAIP":"",
-                 "broden": ""}
+                 "broden": "./data/broden1_224"}
 
 class NAIP_dataset(Dataset):
     def __init__(self, file_dir, n_tiles, preprocess = None):

@@ -18,15 +18,17 @@ import functools
 import json
 import requests
 
-OPENAI_KEY = ''
+from dotenv import load_dotenv
+load_dotenv()
+
+OPENAI_KEY = os.getenv('OPENAI_KEY')
 
 set_headers = {
     "Content-Type": "application/json",
     "Authorization": "Bearer " + OPENAI_KEY,
 }
 
-def get_attention_crops(target_name, images, neuron_id, num_crops_per_image = 4, target_layers = ["layer4"], batch_size = 1000,
-                            device = "cuda", pool_mode='avg', return_bounding_box = False, model=None, preprocess=None):
+def get_attention_crops(target_name, images, neuron_id, num_crops_per_image = 4, target_layers = ["layer4"], batch_size = 1000, device = "cuda", pool_mode='avg', return_bounding_box = False, model=None, preprocess=None):
     
     if target_name == 'custom':
         target_model, preprocess = data_utils.get_target_model(target_name, device, model, preprocess)

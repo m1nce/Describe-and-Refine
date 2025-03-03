@@ -2,8 +2,9 @@ import torch
 import clip
 import data_utils
 import utils
+import numpy as np
 
-mode_list = ['topk-sq-mean', 'reg', 'mean', 'median', 'sq-mean', 'compare_images+topk_sq_mean', 'compare_images+mean']
+mode_list = ['topk-sq-mean', 'reg', 'mean', 'median', 'sq-mean', 'compare_images+topk_sq_mean', 'compare_images+mean', 'logw', 'semantic']
 
 def find_by_last(top_avg, comp_key):
     for i, pair in enumerate(top_avg):
@@ -38,7 +39,7 @@ def mean(ranks):
 def median(ranks):
     top_vals = []
     for label_id in ranks:
-        top_vals.append((stats.median(ranks[label_id]), label_id))
+        top_vals.append((np.median(ranks[label_id]), label_id))
     top_vals.sort()
     return top_vals
 
@@ -48,6 +49,31 @@ def sq_mean(ranks):
     for label_id in ranks:
         top_vals.append((sum([val**2 for val in ranks[label_id]])/len(ranks[label_id]), label_id))
     top_vals.sort()
+    return top_vals
+
+def log_weighted_activation(ranks):
+    top_vals = []
+    for label_id, activations in ranks.items():
+        if len(activations) == 0:
+            top_vals.append((0, label_id))  # Default low score
+        else:
+            score = np.mean(np.log1p(activations))  # log(1 + x) avoids log(0) issues
+            top_vals.append((score, label_id))
+    
+    top_vals.sort(reverse=True)
+    return top_vals
+
+def semantic_consistency_score(ranks, clip_scores, alpha=0.7):
+    top_vals = []
+    for label_id in ranks.keys():
+        activation_score = np.mean(ranks[label_id]) if ranks[label_id] else 0
+        clip_score = clip_scores.get(label_id, 0)
+        
+        # Combined scoring formula
+        final_score = alpha * activation_score + (1 - alpha) * (clip_score ** 2)
+        top_vals.append((final_score, label_id))
+    
+    top_vals.sort(reverse=True)
     return top_vals
 
 def compare_images(target_images, all_generated_images, clip_name, device, target_name, num_images = 5, model=None, preprocess=None):
@@ -83,7 +109,7 @@ def compare_images(target_images, all_generated_images, clip_name, device, targe
     return top_vals
     
 # get score of label
-def get_score(ranks, mode = 'topk-sq-mean', hyp_param = None):
+def get_score(ranks, mode = 'topk-sq-mean', clip_scores = None, hyp_param = None, alpha = 0.7):
     if mode not in mode_list:
         raise Exception("Invalid score mode '{}'".format(mode))
     
@@ -95,3 +121,7 @@ def get_score(ranks, mode = 'topk-sq-mean', hyp_param = None):
         return median(ranks)
     if mode == 'sq-mean':
         return sq_mean(ranks)
+    if mode == 'logw':
+        return log_weighted_activation(ranks)
+    if mode == 'semantic':
+        return semantic_consistency_score(ranks, clip_scores, alpha)

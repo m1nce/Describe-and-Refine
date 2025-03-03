@@ -21,8 +21,11 @@ from transformers import BlipProcessor, BlipForConditionalGeneration
 import warnings
 warnings.filterwarnings('ignore')
 
-BLIP_PATH = """BLIP_PATH"""
-OPENAI_KEY = """OPENAI_KEY"""
+from dotenv import load_dotenv
+load_dotenv()
+
+BLIP_PATH = os.getenv('BLIP_PATH')
+OPENAI_KEY = os.getenv('OPENAI_KEY')
 
 parser = argparse.ArgumentParser(description='Describe-and-Dissect')
 
