@@ -136,6 +136,7 @@ Table of Scoring Methods and Neuron Metrics
 <a id="1">[1]</a> 
 Bai, Nicholas, Rahul A. Iyer, Tuomas Oikarinen, Akshay Kulkarni, and Tsui-Wei Weng.
 2025. “Interpreting Neurons in Deep Vision Networks with Language Models.”
+
 <a id="2">[2]</a> 
 Sander, Michael E., Joan Puigcerver, Josip Djolonga, Gabriel Peyré, and Mathieu Blon-
 del. 2023. “Fast, Differentiable and Sparse Top-k: a Convex Analysis Perspective.” 
