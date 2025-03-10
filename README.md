@@ -7,7 +7,7 @@ by: Minchan Kim, Chia Lee, Lily Weng
     <a href="https://drive.google.com/file/d/1hPwYXKKoe2vmegLnpAYZxFA5ZLDf6F1L/view?usp=drive_link" style="background-color:#e07b39; color:white; padding:10px 15px; text-decoration:none; font-weight:bold; border-radius:5px;">
         Report 📝
     </a>
-    <a href="https://your-poster-link" style="background-color:#8788d5; color:white; padding:10px 15px; text-decoration:none; font-weight:bold; border-radius:5px;">
+    <a href="https://github.com/m1nce/Describe-and-Refine/blob/site/CLEAR%20Contextual%20Latent%20Embedding%20for%20Adaptive%20Representation.jpg" style="background-color:#8788d5; color:white; padding:10px 15px; text-decoration:none; font-weight:bold; border-radius:5px;">
         Poster 📜
     </a>
 </p>
