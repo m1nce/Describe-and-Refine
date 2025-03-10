@@ -22,6 +22,9 @@ import warnings
 warnings.filterwarnings('ignore')
 
 from dotenv import load_dotenv
+
+import matplotlib.pyplot as plt
+
 load_dotenv()
 
 BLIP_PATH = os.getenv('BLIP_PATH')
@@ -78,8 +81,8 @@ if __name__ == '__main__':
         ids_to_check = ids_to_check.split(',')
         ids_to_check = [int(id) for id in ids_to_check]
         
-    if BLIP_PATH is None: raise "Please provide path to BLIP model"
-    if OPENAI_KEY is None: raise "Please provide OPENAI KEY, APIs can be created at https://platform.openai.com/"
+    if BLIP_PATH is None: raise ValueError("Please provide path to BLIP model")
+    if OPENAI_KEY is None: raise ValueError("Please provide OPENAI KEY, APIs can be created at https://platform.openai.com/")
     
     #### Setup ####
     print("Loading Models...")
@@ -141,6 +144,7 @@ if __name__ == '__main__':
     all_imgs = []
     all_img_ids = {neuron_id:[] for neuron_id in ids_to_check}
 
+
     for t, orig_id in enumerate(tqdm(ids_to_check)):
         activating_images = []
         for i, top_id in enumerate(top_ids[:, orig_id]):
@@ -157,15 +161,15 @@ if __name__ == '__main__':
         for img in cropped_images:
             all_img_ids[orig_id].append(len(all_imgs))
             all_imgs.append(img)
-
             
     #### Step 2 - Generate Candidate Concepts ####
     print("\nStep 2: Candidate Concept Generation")
-    
+
     target_feats = utils.get_target_activations(target_name, all_imgs, [target_layer])
     top_vals, top_ids = torch.sort(target_feats, dim=0, descending = True)
     comp_words = {orig_id : [] for orig_id in ids_to_check}
     top_images = {orig_id:[] for orig_id in ids_to_check}
+
 
     for neuron_num, orig_id in enumerate(tqdm(ids_to_check)):
 
@@ -177,12 +181,16 @@ if __name__ == '__main__':
         descriptions = DnD_models.blip_caption(model, processor, images, blip_batch_size, device, print_labels = False)
         for i, description in enumerate(descriptions):
             descriptions[i] = DnD_models.GPT_simplify(description, headers = headers)
-            
+
         for i in range(5):
             cand_concept = DnD_models.GPT_model_single(descriptions, headers = headers)
             comp_words[orig_id].append(cand_concept)
             random.shuffle(descriptions)
         all_concepts.loc[len(all_concepts)] = [orig_id] + comp_words[orig_id]
+
+    #added code
+    print(all_concepts)
+    
 
     utils.save_potential_concepts(all_concepts, results_path)
 
@@ -194,8 +202,17 @@ if __name__ == '__main__':
     We adjust concepts with certain vague words to help SD generation
     """
 
+    #josh user input edit
+    user_input = input("Input concept in form concept1, concept2, concept3: ")
+    input_concepts = [input_concept.strip() for input_concept in user_input.split(',')]
+    human_concepts = {orig_id: input_concepts for orig_id in ids_to_check}
+    print(human_concepts)
+    
     replace_set = ['design','designs','graphic','graphics']
     for orig_id in ids_to_check:
+        # human input + concept
+        comp_words[orig_id].extend(human_concepts[orig_id])
+        
         comp_words[orig_id] = [concept.lower() for concept in comp_words[orig_id]]
         for i, word in enumerate(comp_words[orig_id]):
             if word[-1] == '.':
@@ -204,7 +221,8 @@ if __name__ == '__main__':
                 new_concept = word + ' background'
                 comp_words[orig_id].append(new_concept)
         comp_words[orig_id] = list(set(comp_words[orig_id]))
-                
+
+          
     pil_data = data_utils.get_data(d_probe)
     d_probe_len = len(pil_data)
     all_final_results = {neuron_id : [] for neuron_id in ids_to_check}
@@ -213,49 +231,86 @@ if __name__ == '__main__':
     top_K_param = 10
     beta_images_param = 5
     scoring_func = 'topk-sq-mean'
-
     sd_prompt = 'One realistic image of {}'
     num_inference_steps = 50
-
+    threshold = 0.01 
+    
+    #loop all neurons
     for list_id, orig_id in enumerate(ids_to_check):
-        print("Neuron {} ({}/{})".format(orig_id, list_id + 1, len(ids_to_check)))
+        prior_score = 0
+        score_diff = float('inf')
+        iteration = 0
+        scores = []
 
-        word_list = comp_words[orig_id]
+        print("Neuron {} ({}/{})".format(orig_id, list_id + 1, len(ids_to_check)))
+        
+        word_list = comp_words[orig_id]        
         labels_to_check = len(word_list)
 
         add_im = {}
         add_im_id = {}
         all_sd_imgs = []
 
-        for label_id in range(labels_to_check):
-            pred_label = sd_prompt.format(word_list[label_id])
-            add_im_id[label_id] = []
+        #iteration loop
+        while score_diff > threshold and iteration < 3:
+            print(f"Iteration {iteration + 1}, Neuron {orig_id}")
 
-            add_im, add_im_id, all_sd_imgs = DnD_models.generate_sd_images(add_im, add_im_id, all_sd_imgs, 
-                                                                      pred_label, label_id, pipe, generator,
-                                                                      num_images_per_prompt, num_inference_steps)
+            for label_id in range(labels_to_check):
+                pred_label = sd_prompt.format(word_list[label_id])
+                add_im_id[label_id] = []
+    
+                add_im, add_im_id, all_sd_imgs = DnD_models.generate_sd_images(add_im, add_im_id, all_sd_imgs, 
+                                                                          pred_label, label_id, pipe, generator,
+                                                                          num_images_per_prompt, num_inference_steps)
+
+            # Concept Scoring
+    
+            target_feats = utils.get_target_activations(target_name, all_sd_imgs, [target_layer])
+            ranks, highest_activating = utils.rank_images(target_feats, orig_id, labels_to_check,
+                                                         add_im_id, add_im, top_K_param)
+            clip_weight = scoring_function.compare_images(top_images[orig_id], highest_activating, clip_name, 
+                                                          device, target_name, top_K_param)
+            top_avg_topk = scoring_function.get_score(ranks, mode = scoring_func, hyp_param = beta_images_param)
+    
+            #rank final concepts
+            top_avg_comb = []
+            for i in range(len(clip_weight)):
+                concept_rank = len(top_avg_topk) - scoring_function.find_by_last(top_avg_topk, clip_weight[i][1])
+                weight = clip_weight[i][0]
+                concept_score = concept_rank * weight
+                top_avg_comb.append((concept_score, clip_weight[i][1]))
+            top_avg_comb.sort(reverse = True)
+    
+            #josh
+            fully_ranked_concepts = [word_list[item[1]] for item in top_avg_comb]
+            print(fully_ranked_concepts)
+
+            print('prior score: ', prior_score)
+            current_score = top_avg_comb[0][0] if top_avg_comb else 0
+            scores.append(current_score)
+            score_diff = current_score - prior_score
+            prior_score = current_score
+            print('current score: ', current_score)
+            print('score difference: ', score_diff)
+    
+            #select top 3 concepts
+            for label_num in range(3):
+                if(label_num < len(top_avg_comb)):
+                    all_final_results[orig_id] += [word_list[top_avg_comb[label_num][1]]]
+                else:
+                    all_final_results[orig_id] += [' ']
+
+            iteration += 1
             
-        # Concept Scoring
-        target_feats = utils.get_target_activations(target_name, all_sd_imgs, [target_layer])
-        ranks, highest_activating = utils.rank_images(target_feats, orig_id, labels_to_check,
-                                                     add_im_id, add_im, top_K_param)
-        clip_weight = scoring_function.compare_images(top_images[orig_id], highest_activating, clip_name, 
-                                                      device, target_name, top_K_param)
-        top_avg_topk = scoring_function.get_score(ranks, mode = scoring_func, hyp_param = beta_images_param)
-
-        top_avg_comb = []
-        for i in range(len(clip_weight)):
-            concept_rank = len(top_avg_topk) - scoring_function.find_by_last(top_avg_topk, clip_weight[i][1])
-            weight = clip_weight[i][0]
-            concept_score = concept_rank * weight
-            top_avg_comb.append((concept_score, clip_weight[i][1]))
-        top_avg_comb.sort(reverse = True)
-
-        for label_num in range(3):
-            if(label_num < len(top_avg_comb)):
-                all_final_results[orig_id] += [word_list[top_avg_comb[label_num][1]]]
-            else:
-                all_final_results[orig_id] += [' ']
-        final_concepts.loc[len(final_concepts)] = [orig_id] + all_final_results[orig_id]
+        plt.figure(figsize=(9, 3))
+        plt.plot(range(1, len(scores) + 1), scores)
+        plt.xlabel('Iteration')
+        plt.ylabel('Score')
+        plt.title(f'Score per neuron {orig_id}')
+        plt.savefig(f'{results_path}/neuon_{orig_id}_scores.png')
+        plt.show()
+        
+        final_concepts.loc[len(final_concepts)] = [orig_id] + all_final_results[orig_id][:3]
+        print(all_final_results)
 
     utils.save_final_results(final_concepts, results_path)
