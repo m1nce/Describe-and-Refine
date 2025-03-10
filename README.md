@@ -2,10 +2,7 @@
 
 This work aims to further the work done in [Describe-and-Define](https://openreview.net/pdf?id=x1dXvvElVd). 
 
-**This is the official repository for our paper [Interpreting Neurons in Deep Vision Networks with Language Models](https://openreview.net/pdf?id=x1dXvvElVd), TMLR 2025.** For a quick read of our work, please see our [project website](https://lilywenglab.github.io/Describe-and-Dissect/): 
-* DnD is a novel method to describe the roles of hidden neurons in vision networks with higher quality than existing neuron-level interpretability tools, establishing a new state-of-the-art. 
-* DnD is **training-free**, **concept-set-free**, providing **generative natural language description**, and can easily leverage more capable general purpose models in the future.
-* Below we illustrates the pipeline of DnD (*left*) and the results provided by DnD and other methods with scores (*right*)
+* Below we illustrate the pipeline of DnD (*left*) and our adjusted pipeline of DnR (*right*)
 
 <p align="center">
   <img src="data/github_overview_fig.png" alt="drawing" width="400"/>  
