@@ -203,15 +203,15 @@ if __name__ == '__main__':
     """
 
     #josh user input edit
-    user_input = input("Input concept in form concept1, concept2, concept3: ")
-    input_concepts = [input_concept.strip() for input_concept in user_input.split(',')]
-    human_concepts = {orig_id: input_concepts for orig_id in ids_to_check}
-    print(human_concepts)
+    #user_input = input("Input concept in form concept1, concept2, concept3: ")
+    #input_concepts = [input_concept.strip() for input_concept in user_input.split(',')]
+    #human_concepts = {orig_id: input_concepts for orig_id in ids_to_check}
+    #print(human_concepts)
     
     replace_set = ['design','designs','graphic','graphics']
     for orig_id in ids_to_check:
         # human input + concept
-        comp_words[orig_id].extend(human_concepts[orig_id])
+        #comp_words[orig_id].extend(human_concepts[orig_id])
         
         comp_words[orig_id] = [concept.lower() for concept in comp_words[orig_id]]
         for i, word in enumerate(comp_words[orig_id]):
@@ -252,7 +252,7 @@ if __name__ == '__main__':
         all_sd_imgs = []
 
         #iteration loop
-        while score_diff > threshold and iteration < 3:
+        while iteration < 4: #score_diff > threshold
             print(f"Iteration {iteration + 1}, Neuron {orig_id}")
 
             for label_id in range(labels_to_check):
@@ -287,7 +287,8 @@ if __name__ == '__main__':
 
             print('prior score: ', prior_score)
             current_score = top_avg_comb[0][0] if top_avg_comb else 0
-            scores.append(current_score)
+            scores.append(current_score.item())
+            print(scores)
             score_diff = current_score - prior_score
             prior_score = current_score
             print('current score: ', current_score)
@@ -302,12 +303,12 @@ if __name__ == '__main__':
 
             iteration += 1
             
-        plt.figure(figsize=(9, 3))
+        plt.figure(figsize=(9, 5))
         plt.plot(range(1, len(scores) + 1), scores)
         plt.xlabel('Iteration')
         plt.ylabel('Score')
         plt.title(f'Score per neuron {orig_id}')
-        plt.savefig(f'{results_path}/neuon_{orig_id}_scores.png')
+        plt.savefig(f'{results_path}/neuron_{orig_id}_scores.png')
         plt.show()
         
         final_concepts.loc[len(final_concepts)] = [orig_id] + all_final_results[orig_id][:3]
