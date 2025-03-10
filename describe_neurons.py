@@ -280,11 +280,7 @@ if __name__ == '__main__':
                 concept_score = concept_rank * weight
                 top_avg_comb.append((concept_score, clip_weight[i][1]))
             top_avg_comb.sort(reverse = True)
-    
-            #josh
-            fully_ranked_concepts = [word_list[item[1]] for item in top_avg_comb]
-            print(fully_ranked_concepts)
-
+          
             print('prior score: ', prior_score)
             current_score = top_avg_comb[0][0] if top_avg_comb else 0
             scores.append(current_score.item())
