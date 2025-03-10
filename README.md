@@ -61,15 +61,15 @@ Understanding hidden neurons in vision models is key to improving interpretabili
 - **Top-K Scoring Enhancements:**  
   - **Top-K Log-Weighted Activation:** Prioritizes strong activations while applying logarithmic scaling to balance extreme values.  
     - Formula:  
-      \[
-      S_{\text{log-k}} = \frac{1}{K} \sum_{i=1}^{K} \log(1 + a_{(i)})
-      \]
+      ```
+      S_log-k = (1/K) * sum(log(1 + a_i)) for i in top-K activations
+      ```
 
   - **Top-K Semantic Consistency:** Combines activation strength with **semantic alignment** using CLIP scores.  
     - Formula:  
-      \[
-      S_{\text{semantic-k}} = \alpha \cdot \left( \frac{1}{K} \sum_{i=1}^{K} a_{(i)} \right) + (1 - \alpha) \cdot \text{CLIP}(n)^2
-      \]
+      ```
+      S_semantic-k = α * (1/K) * sum(a_i) + (1 - α) * CLIP(n)^2
+      ```
 
 - **Iterative Feedback and Concept Validation.**  
   - **Synthetic images** were generated using **Stable Diffusion** based on extracted neuron concepts.  
