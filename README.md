@@ -58,18 +58,19 @@ Understanding hidden neurons in vision models is key to improving interpretabili
 - **Testing setup and computational environment.**  
   - Conducted experiments on **UCSD’s DSMLP Kubernetes cluster**, leveraging **GPU acceleration** for efficient processing.  
 
-- **Top-K Scoring Enhancements:**  
-  - **Top-K Log-Weighted Activation:** Prioritizes strong activations while applying logarithmic scaling to balance extreme values.  
-    - Formula:  
-      ```
-      S_log-k = (1/K) * sum(log(1 + a_i)) for i in top-K activations
-      ```
+- **Top-K Log-Weighted Activation:**  
+  - Prioritizes strong activations while applying logarithmic scaling to balance extreme values.  
+  - Formula:  
+    <p align="center">
+      <img src="logk.png" alt="Top-K Log-Weighted Activation" width="400">
+    </p>
 
-  - **Top-K Semantic Consistency:** Combines activation strength with **semantic alignment** using CLIP scores.  
-    - Formula:  
-      ```
-      S_semantic-k = α * (1/K) * sum(a_i) + (1 - α) * CLIP(n)^2
-      ```
+- **Top-K Semantic Consistency:**  
+  - Combines activation strength with **semantic alignment** using CLIP scores.  
+  - Formula:  
+    <p align="center">
+      <img src="sem.png" alt="Top-K Semantic Consistency" width="400">
+    </p>
 
 - **Iterative Feedback and Concept Validation.**  
   - **Synthetic images** were generated using **Stable Diffusion** based on extracted neuron concepts.  
