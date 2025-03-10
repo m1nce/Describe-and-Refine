@@ -14,7 +14,7 @@ by: Minchan Kim, Chia Lee, Lily Weng (mentor)
 
 ## Introduction
 
-Understanding hidden neurons in vision models is key to improving interpretability. Describe-and-Dissect **DnD** is a training-free method that generates highly rated neuron explanations without labeled data or retraining. However, we believe that we could build on and even improve model performance by incorporating more machine learning techniques. We introduce Describe-and-Refine **DnR**, an effort to enhance \textbf{DnD} by adding several learning techniques to improve neuron interpretation. We introduce reinforcement learning by adding the option for users to input concepts, create custom scoring functions for measuring which concept best fits a neuron, and an iterative process for stable diffusion image generation and rating candidate concept accuracy to find the best concept fit for the highest activating generated images.
+Understanding hidden neurons in vision models is key to improving interpretability. Describe-and-Dissect **DnD**[1] is a training-free method that generates highly rated neuron explanations without labeled data or retraining. However, we believe that we could build on and even improve model performance by incorporating more machine learning techniques. We introduce Describe-and-Refine **DnR**, an effort to enhance \textbf{DnD} by adding several learning techniques to improve neuron interpretation. We introduce reinforcement learning by adding the option for users to input concepts, create custom scoring functions for measuring which concept best fits a neuron, and an iterative process for stable diffusion image generation and rating candidate concept accuracy to find the best concept fit for the highest activating generated images.
 
 <center>
 <table>
@@ -131,7 +131,11 @@ Table of Scoring Methods and Neuron Metrics
   - **Feature tuning systems** to enhance user input integration.  
   - **Instant scoring functionality** to provide real-time feedback for user-defined concepts.  
   - Future experiments will aim to **refine these approaches** to improve neuron interpretability further.
- 
+  
+ ## References
+<a id="1">[1]</a> 
+Bai, Nicholas, Rahul A. Iyer, Tuomas Oikarinen, Akshay Kulkarni, and Tsui-Wei Weng.
+2025. “Interpreting Neurons in Deep Vision Networks with Language Models.”
 <script type="text/javascript" async
   src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script type="text/javascript" async
