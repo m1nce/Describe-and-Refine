@@ -37,12 +37,10 @@ Understanding hidden neurons in vision models is key to improving interpretabili
 
 ## Objectives
 
-\begin{itemize}
-    \item Output more robust neuron concept explanations.
-    \item Improve model performance and runtime efficiency.
-    \item Reveal insight on black box neural network functionality in vision networks.
-    \item Explore potential for reinforcement learning and user improvement in a label-free neuron descriptor.
-\end{itemize}
+- Output more robust neuron concept explanations.
+- Improve model performance and runtime efficiency.
+- Reveal insight on black box neural network functionality in vision networks.
+- Explore potential for reinforcement learning and user improvement in a label-free neuron descriptor.
 
 ## Methods
 
