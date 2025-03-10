@@ -5,9 +5,9 @@ This work aims to further the work done in [Describe-and-Define](https://openrev
 * Below we illustrate the pipeline of DnD (*left*) and our adjusted pipeline of DnR (*right*)
 
 <p align="center">
-  <img src="data/github_overview_fig.png" alt="drawing" width="400"/>  
+  <img src="data/github_overview_fig.png" alt="drawing" width="350"/>  
   &nbsp &nbsp &nbsp &nbsp &nbsp
-  <img src="data/DnR_Pipeline.PNG" alt="overview" width="400"/>
+  <img src="data/DnR_Pipeline.PNG" alt="overview" width="350"/>
 </p>
 
 
