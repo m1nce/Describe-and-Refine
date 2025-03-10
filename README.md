@@ -7,7 +7,7 @@ This work aims to further the work done in [Describe-and-Define](https://openrev
 <p align="center">
   <img src="data/github_overview_fig.png" alt="drawing" width="400"/>  
   &nbsp &nbsp &nbsp &nbsp &nbsp
-  <img src="data/DnD_Overview_Fig.png" alt="overview" width="350"/>
+  <img src="data/DnR Pipeline.png" alt="overview" width="350"/>
 </p>
 
 
