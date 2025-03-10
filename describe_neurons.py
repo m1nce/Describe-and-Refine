@@ -234,7 +234,7 @@ if __name__ == '__main__':
     sd_prompt = 'One realistic image of {}'
     num_inference_steps = 50
     threshold = 0.01 
-    
+        all_neuron_scores = {}
     #loop all neurons
     for list_id, orig_id in enumerate(ids_to_check):
         prior_score = 0
@@ -307,7 +307,7 @@ if __name__ == '__main__':
         plt.plot(range(1, len(scores) + 1), scores)
         plt.xlabel('Iteration')
         plt.ylabel('Score')
-        plt.title(f'Score per neuron {orig_id}')
+        plt.title(f'Score For Neuron {orig_id}')
         plt.savefig(f'{results_path}/neuron_{orig_id}_scores.png')
         plt.show()
         
