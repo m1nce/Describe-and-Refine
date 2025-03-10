@@ -1,4 +1,4 @@
-by: Minchan Kim, Chia Lee, Lily Weng
+by: Minchan Kim, Chia Lee, Lily Weng (mentor)
 
 <p>
     <a href="https://github.com/m1nce/Describe-and-Refine" style="background-color:#1f63b9; color:white; padding:10px 15px; text-decoration:none; font-weight:bold; border-radius:5px;">
