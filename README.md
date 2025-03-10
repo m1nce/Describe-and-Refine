@@ -20,12 +20,12 @@ Understanding hidden neurons in vision models is key to improving interpretabili
 <table>
 <tr>
     <td align="center">
-        <img src="figure/DnD Pipeline.PNG" alt="DnD" width="350"/>
+        <img src="data/github_overview_fig.png" alt="DnD" width="350"/>
         <br>
         <b>(a) DnD</b>
     </td>
     <td align="center">
-        <img src="figure/DnR Pipeline.PNG" alt="DnR" width="350"/>
+        <img src="data/DnR_Pipeline.PNG" alt="DnR" width="350"/>
         <br>
         <b>(b) DnR</b>
     </td>
