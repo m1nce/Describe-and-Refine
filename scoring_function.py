@@ -4,7 +4,7 @@ import data_utils
 import utils
 import numpy as np
 
-mode_list = ['topk-sq-mean', 'reg', 'mean', 'median', 'sq-mean', 'compare_images+topk_sq_mean', 'compare_images+mean', 'logw', 'semantic']
+mode_list = ['topk-sq-mean', 'reg', 'mean', 'median', 'sq-mean', 'compare_images+topk_sq_mean', 'compare_images+mean', 'topk-logw', 'topk-semantic']
 
 def find_by_last(top_avg, comp_key):
     for i, pair in enumerate(top_avg):
@@ -51,29 +51,48 @@ def sq_mean(ranks):
     top_vals.sort()
     return top_vals
 
-def log_weighted_activation(ranks):
+def log_weighted_activation_topk(ranks, k=5):
     top_vals = []
+    
     for label_id, activations in ranks.items():
         if len(activations) == 0:
-            top_vals.append((0, label_id))  # Default low score
+            top_vals.append((0, label_id))  # Default low score for empty activations
         else:
-            score = np.mean(np.log1p(activations))  # log(1 + x) avoids log(0) issues
+            # Select the Top-K highest activations first
+            top_k_activations = sorted(activations, reverse=True)[:k]
+            
+            # Compute log-weighted activation score
+            score = np.mean(np.log1p(top_k_activations))  # log(1 + x) avoids log(0) issues
             top_vals.append((score, label_id))
     
-    top_vals.sort(reverse=True)
+    # Sort in descending order (higher score = more important)
+    top_vals.sort(reverse=True, key=lambda x: x[0])
+    
     return top_vals
 
-def semantic_consistency_score(ranks, clip_scores, alpha=0.7):
+def semantic_consistency_score_topk(ranks, clip_scores, k=5, alpha=0.7):
     top_vals = []
-    for label_id in ranks.keys():
-        activation_score = np.mean(ranks[label_id]) if ranks[label_id] else 0
+    
+    for label_id, activations in ranks.items():
+        if len(activations) == 0:
+            activation_score = 0
+        else:
+            # Select the Top-K highest activations first
+            top_k_activations = sorted(activations, reverse=True)[:k]
+            
+            # Compute mean activation score
+            activation_score = np.mean(top_k_activations)
+
+        # Get CLIP score (default to 0 if missing)
         clip_score = clip_scores.get(label_id, 0)
-        
-        # Combined scoring formula
+
+        # Compute final semantic consistency score
         final_score = alpha * activation_score + (1 - alpha) * (clip_score ** 2)
         top_vals.append((final_score, label_id))
     
-    top_vals.sort(reverse=True)
+    # Sort in descending order (higher score = more important)
+    top_vals.sort(reverse=True, key=lambda x: x[0])
+    
     return top_vals
 
 def compare_images(target_images, all_generated_images, clip_name, device, target_name, num_images = 5, model=None, preprocess=None):
@@ -112,16 +131,21 @@ def compare_images(target_images, all_generated_images, clip_name, device, targe
 def get_score(ranks, mode = 'topk-sq-mean', clip_scores = None, hyp_param = None, alpha = 0.7):
     if mode not in mode_list:
         raise Exception("Invalid score mode '{}'".format(mode))
+        
+    results = []
     
     if mode == 'topk-sq-mean' or mode == 'compare_images+topk_sq_mean':
-        return topk_sq_mean(ranks, hyp_param)
+        results = topk_sq_mean(ranks, hyp_param)
     if mode == 'mean' or mode == 'compare_images+mean':
-        return mean(ranks)
+        results = mean(ranks)
     if mode == 'median':
-        return median(ranks)
+        results = median(ranks)
     if mode == 'sq-mean':
-        return sq_mean(ranks)
-    if mode == 'logw':
-        return log_weighted_activation(ranks)
-    if mode == 'semantic':
-        return semantic_consistency_score(ranks, clip_scores, alpha)
+        results = sq_mean(ranks)
+    if mode == 'topk-logw':
+        results = log_weighted_activation_topk(ranks)
+    if mode == 'topk-semantic':
+        results = semantic_consistency_score_topk(ranks, clip_scores, alpha)
+
+    print("Computed Scores:", results)
+    return results
