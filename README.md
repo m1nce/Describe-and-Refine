@@ -51,7 +51,7 @@ Understanding hidden neurons in vision models is key to improving interpretabili
 - **DnD enables training-free neuron interpretation** by associating neuron activations with **textual concepts** and refining them through **iterative feedback using synthetic image generation and ranking**.  
 
 - **DnR improves upon DnD by optimizing scoring mechanisms and iterative feedback.**  
-  - Implemented **Top-K Log-Weighted Activation** and **Top-K Semantic Consistency** scoring to rank neurons effectively.  
+  - Implemented **Top-K Log-Weighted Activation** and **Top-K Semantic Consistency**, methods based off modern scoring studies [2] to rank neurons effectively.  
   - Refined iterative scoring by comparing **concept scores** across multiple iterations, maintaining a master list for evaluation.  
   - Introduced **user-input reinforcement learning**, allowing for manual concept refinement before synthetic image generation.  
 
@@ -136,6 +136,9 @@ Table of Scoring Methods and Neuron Metrics
 <a id="1">[1]</a> 
 Bai, Nicholas, Rahul A. Iyer, Tuomas Oikarinen, Akshay Kulkarni, and Tsui-Wei Weng.
 2025. “Interpreting Neurons in Deep Vision Networks with Language Models.”
+<a id="2">[2]</a> 
+Sander, Michael E., Joan Puigcerver, Josip Djolonga, Gabriel Peyré, and Mathieu Blon-
+del. 2023. “Fast, Differentiable and Sparse Top-k: a Convex Analysis Perspective.” 
 <script type="text/javascript" async
   src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
 <script type="text/javascript" async
