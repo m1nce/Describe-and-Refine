@@ -14,7 +14,7 @@ by: Minchan Kim, Chia Lee, Lily Weng (mentor)
 
 ## Introduction
 
-Understanding hidden neurons in vision models is key to improving interpretability. Describe-and-Dissect **DnD**[1] is a training-free method that generates highly rated neuron explanations without labeled data or retraining. However, we believe that we could build on and even improve model performance by incorporating more machine learning techniques. We introduce Describe-and-Refine **DnR**, an effort to enhance \textbf{DnD} by adding several learning techniques to improve neuron interpretation. We introduce reinforcement learning by adding the option for users to input concepts, create custom scoring functions for measuring which concept best fits a neuron, and an iterative process for stable diffusion image generation and rating candidate concept accuracy to find the best concept fit for the highest activating generated images.
+Understanding hidden neurons in vision models is key to improving interpretability. Describe-and-Dissect (DnD)[1] is a training-free method that generates highly rated neuron explanations without labeled data or retraining. However, we believe that we could build on and even improve model performance by incorporating more machine learning techniques. We introduce Describe-and-Refine (DnR), an effort to enhance DnD by adding several learning techniques to improve neuron interpretation. We introduce reinforcement learning by adding the option for users to input concepts, create custom scoring functions for measuring which concept best fits a neuron, and an iterative process for stable diffusion image generation and rating candidate concept accuracy to find the best concept fit for the highest activating generated images.
 
 <center>
 <table>
