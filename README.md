@@ -1,7 +1,7 @@
 by: Minchan Kim, Chia Lee, Lily Weng
 
 <p>
-    <a href="[https://github.com/your-repo](https://github.com/m1nce/Describe-and-Refine)" style="background-color:#1f63b9; color:white; padding:10px 15px; text-decoration:none; font-weight:bold; border-radius:5px;">
+    <a href="https://github.com/m1nce/Describe-and-Refine" style="background-color:#1f63b9; color:white; padding:10px 15px; text-decoration:none; font-weight:bold; border-radius:5px;">
         Codebase ⚙️
     </a>
     <a href="https://drive.google.com/file/d/1hPwYXKKoe2vmegLnpAYZxFA5ZLDf6F1L/view?usp=drive_link" style="background-color:#e07b39; color:white; padding:10px 15px; text-decoration:none; font-weight:bold; border-radius:5px;">
